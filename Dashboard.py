@@ -54,8 +54,8 @@ quantidade_vendas_estados = dados.groupby('Local da compra')[['Produto']].count(
 quantidade_vendas_estados = dados.drop_duplicates(subset = 'Local da compra')[['Local da compra', 'lat', 'lon']].merge(quantidade_vendas_estados, left_on = 'Local da compra', right_index = True).sort_values('Produto', ascending = False)
 
 quantidade_vendas_mensal = dados.set_index('Data da Compra').groupby(pd.Grouper(freq = 'M'))['Produto'].count().reset_index()
-quantidade_vendas_mensal['Ano'] = receita_mensal['Data da Compra'].dt.year
-quantidade_vendas_mensal['Mes'] = receita_mensal['Data da Compra'].dt.month_name()
+quantidade_vendas_mensal['Ano'] = quantidade_vendas_mensal['Data da Compra'].dt.year
+quantidade_vendas_mensal['Mes'] = quantidade_vendas_mensal['Data da Compra'].dt.month_name()
 
 quantidade_vendas_categorias = dados.groupby('Categoria do Produto')[['Produto']].count().sort_values('Produto', ascending = False)
 
@@ -79,7 +79,7 @@ fig_receita_mensal = px.line(receita_mensal,
     x = 'Mes',
     y = 'Preço',
     markers = True,
-    range_y = (0, receita_mensal.max()),
+    range_y = (0, receita_mensal['Preço'].max()),
     color = 'Ano',
     line_dash = 'Ano',
     title = 'Receita mensal'
@@ -116,7 +116,7 @@ fig_quantidade_vendas_mensal = px.line(quantidade_vendas_mensal,
     x = 'Mes',
     y = 'Produto',
     markers = True,
-    range_y = (0, receita_mensal.max()),
+    range_y = (0, quantidade_vendas_mensal['Produto'].max()),
     color = 'Ano',
     line_dash = 'Ano',
     title = 'Quantidade de vendas mensal'
